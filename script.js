@@ -109,7 +109,7 @@ function loop() {
     //Moving of ball.
     ball.x += ball.dx;
     ball.y += ball.dy;
-    
+
 
     if (ball.y < grid) {
         ball.y = grid;
@@ -127,6 +127,12 @@ function loop() {
 
         if (ball.x < 0) {
             leftTouchdownSound.play();
+
+            ball.x = ball.x - grid;
+
+            ball.dx = 0;
+            ball.dy = 0;
+
             plrScore2.innerHTML = +plrScore2.innerHTML + 1;
 
             if (plrScore2.innerHTML == 9) {
@@ -134,6 +140,10 @@ function loop() {
             }
         } else if (ball.x > canvas.width) {
             rightTouchdownSound.play();
+
+            ball.dx = 0;
+            ball.dy = 0;
+
             plrScore1.innerHTML = +plrScore1.innerHTML + 1;
 
             if (plrScore1.innerHTML == 9) {
@@ -143,11 +153,24 @@ function loop() {
 
         setTimeout( () => {
             ball.resetting = false;
+            ballSpeed = ballSpeed + 0.2;
 
-            ballStart.play();
+            if (ball.x < 0) {
+                let yDirection = (Math.floor(Math.random() * 2) === 0) ? -1 : 1;
+
+                ball.dx = ballSpeed;
+                ball.dy = ballSpeed * yDirection;
+            } else if (ball.x > canvas.width) {
+                let yDirection = (Math.floor(Math.random() * 2) === 0) ? -1 : 1;
+
+                ball.dx = -ballSpeed;
+                ball.dy = ballSpeed * yDirection;
+            }
 
             ball.x = canvas.width / 2;
             ball.y = canvas.height / 2;
+
+            ballStart.play();
         }, 1000 );
     }
 
@@ -173,7 +196,7 @@ function loop() {
     for (let i = grid; i < (canvas.height - grid); i += grid * 2) {
         context.fillRect( (canvas.width / 2) - (grid / 2), i, grid, grid );
     }
-    
+
 };
 
 document.addEventListener( `keydown`, function(event) {
